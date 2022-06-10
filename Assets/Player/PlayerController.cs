@@ -1,15 +1,16 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     private int xInput = 0;
     private int lastXInput = 0;
     private int zInput = 0;
     private int lastZInput = 0;
-    public float speed = 10.0f;
-    public float jumpStrength = 10.0f;
+    public float speed = 20.0f;
+    public float jumpStrength = 5.0f;
 
     private bool isOnGround = true;
     private Rigidbody body;
@@ -21,8 +22,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        Move();
-        Jump();
+        if (isLocalPlayer)
+        {
+            Move();
+            Jump();
+        }
     }
 
     void Move()
@@ -61,10 +65,12 @@ public class PlayerController : MonoBehaviour
         Vector3 moveVector = (Vector3.forward * zInput * Time.deltaTime + Vector3.right * xInput * Time.deltaTime) * speed;
         moveVector.y = body.velocity.y;
         body.velocity = moveVector;
+       
     }
 
     void Jump()
     {
+
         if (Input.GetKeyDown(KeyCode.Space) && isOnGround)
         {
             body.velocity = new Vector3(body.velocity.x, jumpStrength, body.velocity.z);

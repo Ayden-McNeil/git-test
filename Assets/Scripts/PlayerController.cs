@@ -24,14 +24,25 @@ public class PlayerController : NetworkBehaviour
 
     float sensitivity = 0.75f;
 
+    private UIManager UIManagerScript;
+    static private int numberOfPlayers = 0;
+
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         body = GetComponent<Rigidbody>();
-       
-        if (isLocalPlayer)
+        UIManagerScript = GameObject.Find("UI Manager").GetComponent<UIManager>();
+        UIManagerScript.UpdatePlayerCountUI(++numberOfPlayers);
+        if (isServer && isLocalPlayer)
         {
+        }
+        if (isLocalPlayer)
+        { 
             focalPoint.SetActive(true);
+        }
+        if (isServer)
+        {
         }
     }
 

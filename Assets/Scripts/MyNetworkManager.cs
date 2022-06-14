@@ -7,7 +7,7 @@ using TMPro;
 public class MyNetworkManager : NetworkManager
 {
     [SerializeField] TextMeshProUGUI timerText;
-    [SerializeField] TimerScript timerScript;
+    [SerializeField] UIManager UIManagerScript;
     int text = 0;
     public override void OnStartServer()
     {
@@ -22,7 +22,6 @@ public class MyNetworkManager : NetworkManager
     public override void OnStartClient()
     {
         Debug.Log("Connected to server");
-        
     }
     public override void OnStopClient()
     {
@@ -34,7 +33,7 @@ public class MyNetworkManager : NetworkManager
         while (true)
         {
             timerText.text = text++.ToString();
-            timerScript.UpdateTimerClientRpc(text);
+            UIManagerScript.UpdateTimerClientRpc(text);
             yield return new WaitForSeconds(1);
         }
     }

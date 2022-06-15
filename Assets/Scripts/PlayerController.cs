@@ -27,13 +27,15 @@ public class PlayerController : NetworkBehaviour
     private UIManager UIManagerScript;
     static private int numberOfPlayers = 0;
 
+    private int myCubesMade = 0;
+
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         body = GetComponent<Rigidbody>();
         UIManagerScript = GameObject.Find("UI Manager").GetComponent<UIManager>();
-        UIManagerScript.UpdatePlayerCountUI(++numberOfPlayers);
+        //UIManagerScript.UpdatePlayerCountUI(++numberOfPlayers);
         if (isServer && isLocalPlayer)
         {
         }
@@ -75,6 +77,19 @@ public class PlayerController : NetworkBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            if (isLocalPlayer)
+            {
+                myCubesMade++;
+                if (isServer)
+                {
+                   // UIManagerScript.UpdateServerwithClientCubeNumber(0, myCubesMade);
+                }
+                else
+                {
+                    //UIManagerScript.UpdateServerwithClientCubeNumber(1, myCubesMade);
+                }
+                //Debug.Log(myCubesMade);
+            }
             if (isServer)
             {
                 block.GetComponent<MeshRenderer>().material = blue;
@@ -148,7 +163,7 @@ public class PlayerController : NetworkBehaviour
 
     [Command]
     void SpawnBlockCmd(Vector3 position)
-    {
+    { 
         block.GetComponent<MeshRenderer>().material = red;
         GameObject spawnBlock = Instantiate(block, position, block.transform.rotation);
         NetworkServer.Spawn(spawnBlock);

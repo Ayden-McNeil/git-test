@@ -33,7 +33,7 @@ public class MyNetworkManager : NetworkManager
         while (true)
         {
             timerText.text = text++.ToString();
-            UIManagerScript.UpdateTimerClientRpc(text);
+            //UIManagerScript.UpdateTimerClientRpc(text);
             yield return new WaitForSeconds(1);
         }
     }

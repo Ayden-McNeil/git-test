@@ -158,8 +158,7 @@ MonoBehaviour:
   jumpStrength: 7
   focalPoint: {fileID: 410837100118650676}
   block: {fileID: 3615910817697753275, guid: e78a111fdc1355447874b208b576b906, type: 3}
-  blue: {fileID: 2100000, guid: f1b183f14085e224a8df781360c82c11, type: 2}
-  red: {fileID: 2100000, guid: f4fc06064eaa108439ef647e2371a6b8, type: 2}
+  material: {fileID: 2100000, guid: f1b183f14085e224a8df781360c82c11, type: 2}
 --- !u!114 &6359997906033173475
 MonoBehaviour:
   m_ObjectHideFlags: 0

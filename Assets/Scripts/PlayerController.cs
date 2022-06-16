@@ -19,8 +19,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] GameObject focalPoint;
     [SerializeField] GameObject block;
 
-    [SerializeField] Material blue;
-    [SerializeField] Material red;
+    [SerializeField] Material material;
 
     float sensitivity = 0.75f;
 
@@ -36,15 +35,11 @@ public class PlayerController : NetworkBehaviour
         body = GetComponent<Rigidbody>();
         UIManagerScript = GameObject.Find("UI Manager").GetComponent<UIManager>();
         UIManagerScript.UpdatePlayerCountUI(++numberOfPlayers);
-        if (isServer && isLocalPlayer)
-        {
-        }
+
         if (isLocalPlayer)
         { 
             focalPoint.SetActive(true);
-        }
-        if (isServer)
-        {
+            material.color = new Color(Random.Range(0, 100)/100f, Random.Range(0, 100)/100f, Random.Range(0, 100)/100f);
         }
     }
 
@@ -77,22 +72,8 @@ public class PlayerController : NetworkBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (isLocalPlayer)
-            {
-                myCubesMade++;
-                if (isServer)
-                {
-                   //UIManagerScript.UpdateServerwithClientCubeNumber(0, myCubesMade);
-                }
-                else
-                {
-                    //UIManagerScript.UpdateServerwithClientCubeNumber(1, myCubesMade);
-                }
-                //Debug.Log(myCubesMade);
-            }
             if (isServer)
             {
-                block.GetComponent<MeshRenderer>().material = blue;
                 GameObject spawnBlock = Instantiate(block, transform.position + focalPoint.transform.forward, block.transform.rotation);
                 NetworkServer.Spawn(spawnBlock);
                 CorrectBlockColor(spawnBlock);
@@ -164,14 +145,13 @@ public class PlayerController : NetworkBehaviour
     [Command]
     void SpawnBlockCmd(Vector3 position)
     { 
-        block.GetComponent<MeshRenderer>().material = red;
         GameObject spawnBlock = Instantiate(block, position, block.transform.rotation);
+        //spawnBlock.GetComponent<MeshRenderer>().material.color = new Color(r, g, b);
         NetworkServer.Spawn(spawnBlock);
     }
 
     [ClientRpc]
     void CorrectBlockColor(GameObject block)
     {
-        block.GetComponent<MeshRenderer>().material = blue;
     }
 }

@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -18,6 +19,7 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody body;
     [SerializeField] GameObject focalPoint;
     [SerializeField] GameObject block;
+    //[SerializeField] public TextMeshProUGUI usernameText;
 
     float sensitivity = 0.75f;
 
@@ -37,6 +39,7 @@ public class PlayerController : NetworkBehaviour
         { 
             focalPoint.SetActive(true);
             myColor = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
+            UIManagerScript.UpdateUsernameCmd(UIManagerScript.usernameInput.text, netIdentity);
         }
     }
 

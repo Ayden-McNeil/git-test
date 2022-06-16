@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   token: 04a1aac258ffe94a8a9a3c4b0a6e5f43
   playflowUrl: 
-  serverArguments: s 30 0 0
+  serverArguments: 
   enableSSL: 0
   serverLocation: 0

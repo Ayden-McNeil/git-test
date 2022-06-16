@@ -154,7 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  speed: 1500
+  speed: 250
   jumpStrength: 7
   focalPoint: {fileID: 410837100118650676}
   block: {fileID: 3615910817697753275, guid: e78a111fdc1355447874b208b576b906, type: 3}

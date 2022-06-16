@@ -35,7 +35,7 @@ public class PlayerController : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         body = GetComponent<Rigidbody>();
         UIManagerScript = GameObject.Find("UI Manager").GetComponent<UIManager>();
-        //UIManagerScript.UpdatePlayerCountUI(++numberOfPlayers);
+        UIManagerScript.UpdatePlayerCountUI(++numberOfPlayers);
         if (isServer && isLocalPlayer)
         {
         }
@@ -82,7 +82,7 @@ public class PlayerController : NetworkBehaviour
                 myCubesMade++;
                 if (isServer)
                 {
-                   // UIManagerScript.UpdateServerwithClientCubeNumber(0, myCubesMade);
+                   //UIManagerScript.UpdateServerwithClientCubeNumber(0, myCubesMade);
                 }
                 else
                 {

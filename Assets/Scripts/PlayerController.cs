@@ -113,7 +113,7 @@ public class PlayerController : NetworkBehaviour
             zInput = 1;
             lastZInput = zInput;
         }
-        Vector3 moveVector = (transform.forward * zInput * Time.deltaTime + transform.right * xInput * Time.deltaTime) * speed;
+        Vector3 moveVector = (transform.forward * zInput + transform.right * xInput) * speed;
         moveVector.y = body.velocity.y;
         body.velocity = moveVector;
     }

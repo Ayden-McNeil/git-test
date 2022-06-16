@@ -19,15 +19,12 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] GameObject focalPoint;
     [SerializeField] GameObject block;
 
-    [SerializeField] Material material;
-
     float sensitivity = 0.75f;
 
     private UIManager UIManagerScript;
     static private int numberOfPlayers = 0;
 
-    private int myCubesMade = 0;
-
+    private Color myColor;
 
     void Start()
     {
@@ -39,7 +36,7 @@ public class PlayerController : NetworkBehaviour
         if (isLocalPlayer)
         { 
             focalPoint.SetActive(true);
-            material.color = new Color(Random.Range(0, 100)/100f, Random.Range(0, 100)/100f, Random.Range(0, 100)/100f);
+            myColor = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
         }
     }
 
@@ -51,38 +48,33 @@ public class PlayerController : NetworkBehaviour
             Jump();
             RotateCamera();
             CheckMakeBlock();
+            if (isServer)
+            {
+                Debug.Log(numberOfPlayers);
+            }
         }
-    }
-
-    void RotateCamera()
-    {
-        float xMouse = Input.GetAxis("Mouse X") * sensitivity;
-        float yMouse = Input.GetAxis("Mouse Y") * sensitivity;
-
-        yRotation += xMouse;
-        xRotation -= yMouse;
-
-        xRotation = Mathf.Clamp(xRotation, -90, 90);
-
-        //focalPoint.transform.localRotation = Quaternion.Euler(0, yRotation, 0);
-        focalPoint.transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0);
     }
 
     void CheckMakeBlock()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (isServer)
-            {
-                GameObject spawnBlock = Instantiate(block, transform.position + focalPoint.transform.forward, block.transform.rotation);
-                NetworkServer.Spawn(spawnBlock);
-                CorrectBlockColor(spawnBlock);
-            }
-            else
-            {
-                SpawnBlockCmd(transform.position + focalPoint.transform.forward);
-            }
+            SpawnBlockCmd(transform.position + focalPoint.transform.forward, myColor);
         }
+    }
+
+    [Command]
+    void SpawnBlockCmd(Vector3 position, Color color)
+    {
+        GameObject spawnBlock = Instantiate(block, position, block.transform.rotation);
+        NetworkServer.Spawn(spawnBlock);
+        CorrectColorRpc(spawnBlock.GetComponent<NetworkIdentity>(), color);
+    }
+
+    [ClientRpc]
+    void CorrectColorRpc(NetworkIdentity ID, Color color)
+    {
+        ID.gameObject.GetComponent<MeshRenderer>().material.color = color;
     }
 
     void Move()
@@ -118,10 +110,9 @@ public class PlayerController : NetworkBehaviour
             zInput = 1;
             lastZInput = zInput;
         }
-        Vector3 moveVector = (focalPoint.transform.forward * zInput * Time.deltaTime + focalPoint.transform.right * xInput * Time.deltaTime) * speed;
+        Vector3 moveVector = (transform.forward * zInput * Time.deltaTime + transform.right * xInput * Time.deltaTime) * speed;
         moveVector.y = body.velocity.y;
         body.velocity = moveVector;
-       
     }
 
     void Jump()
@@ -142,16 +133,22 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    [Command]
-    void SpawnBlockCmd(Vector3 position)
-    { 
-        GameObject spawnBlock = Instantiate(block, position, block.transform.rotation);
-        //spawnBlock.GetComponent<MeshRenderer>().material.color = new Color(r, g, b);
-        NetworkServer.Spawn(spawnBlock);
+    void RotateCamera()
+    {
+        float xMouse = Input.GetAxis("Mouse X") * sensitivity;
+        float yMouse = Input.GetAxis("Mouse Y") * sensitivity;
+
+        yRotation += xMouse;
+        xRotation -= yMouse;
+
+        xRotation = Mathf.Clamp(xRotation, -90, 90);
+
+        focalPoint.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        transform.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
-    [ClientRpc]
-    void CorrectBlockColor(GameObject block)
+    private void OnDestroy()
     {
+        UIManagerScript.UpdatePlayerCountUI(--numberOfPlayers);
     }
 }

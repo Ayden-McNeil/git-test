@@ -8,41 +8,33 @@ public class UIManager : NetworkBehaviour
 {
     [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] TextMeshProUGUI playerCountText;
-    [SerializeField] TextMeshProUGUI serverCount;
-    [SerializeField] TextMeshProUGUI clientCount;
+    int time = 0;
 
-    [Command]
-    public void UpdateServerwithClientCubeNumber(int index, int count)
+    private void Start()
     {
-        Debug.Log("UpdatesererwithClient CubeNumber was called");
-        switch (index)
+        if (isServer)
         {
-            case 0:
-                serverCount.text = count.ToString();
-                break;
-
-            case 1:
-                clientCount.text = count.ToString();
-                break;
-        }       
-        UpdateClientWithCubeNumber(serverCount.text, clientCount.text);
+            StartCoroutine(StartTimer());
+        }
     }
 
-    [ClientRpc]
-    private void UpdateClientWithCubeNumber(string countServer, string countClient)
+    IEnumerator StartTimer()
     {
-        serverCount.text = countServer;
-        clientCount.text = countClient;
-    }
-
-    public void UpdatePlayerCountUI(int count)
-    {
-        playerCountText.text = count.ToString();
+        while (true)
+        {
+            UpdateTimerClientRpc(time++);
+            yield return new WaitForSeconds(1);
+        }
     }
 
     [ClientRpc]
     public void UpdateTimerClientRpc(int time)
     {
         timerText.text = time.ToString();
+    }
+
+    public void UpdatePlayerCountUI(int numberOfPlayers)
+    {
+        playerCountText.text = numberOfPlayers.ToString();
     }
 }
